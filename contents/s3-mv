@@ -1,0 +1,28 @@
+#!/bin/bash
+# s3-mv
+set -eu
+
+(( $# != 2 )) && {
+   echo >&2 "usage: $0 source destination"
+   exit 2
+}
+
+
+declare -r SOURCE=$1 DESTINATION=$2
+
+declare -a CLOPTS=()
+[[ "${RD_CONFIG_QUIET:-}" == true ]]     && CLOPTS+=(--quiet)
+[[ "${RD_CONFIG_RECURSIVE:-}" == true ]] && CLOPTS+=(--recursive)
+[[ "${RD_CONFIG_DRYRUN:-}" == true ]]    && CLOPTS+=(--dryrun)
+[[ -n "${RD_CONFIG_OPTIONS:-}" ]]        && CLOPTS+=($RD_CONFIG_OPTIONS)
+
+
+[[ -n "${RD_CONFIG_ACCESS_KEY:-}" ]]        && export AWS_ACCESS_KEY_ID=${RD_CONFIG_ACCESS_KEY}
+[[ -n "${RD_CONFIG_SECRET_ACCESS_KEY:-}" ]] && export AWS_SECRET_ACCESS_KEY=${RD_CONFIG_SECRET_ACCESS_KEY}
+[[ -n "${RD_CONFIG_DEFAULT_REGION:-}" ]]    && export AWS_DEFAULT_REGION=${RD_CONFIG_DEFAULT_REGION}
+
+aws s3 mv "$SOURCE" "$DESTINATION" "${CLOPTS[@]:-}"
+
+
+exit $?
+# Done

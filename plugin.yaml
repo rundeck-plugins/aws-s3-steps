@@ -1,0 +1,399 @@
+name: aws-cli-plugin
+version: 1.0.0
+rundeckPluginVersion: 1.2
+author: alexh
+date: Tue Feb 16 2016
+providers:
+  - name: aws-cli-s3-cp-step
+    service: WorkflowNodeStep
+    title: 'aws / s3 / cp'
+    description: 'Copies a local file or S3 object to another location locally or in S3.'
+    plugin-type: script
+    script-interpreter: /usr/bin/env bash
+    script-file: s3-cp
+    script-args: ${config.source} ${config.destination}
+    config:
+      - type: String
+        name: source
+        title: source
+        description: 'the S3 URI or local path'
+      - type: String
+        name: destination
+        title: destination
+        description: 'the S3 URI or local path'
+      - type: String
+        name: include
+        title: include
+        description: 'Do not exclude files or objects in the command that match the specified pattern.'
+      - type: String
+        name: exclude
+        title: exclude
+        description: 'Exclude all files or objects from the command that matches the specified pattern.'        
+      - type: Boolean
+        name: quiet
+        title: quiet
+        description: 'Use --quiet? Does not display the operations performed from the specified command.'
+      - type: Boolean
+        name: recursive
+        title: recursive
+        description: 'Use --recursive?'
+      - type: Boolean
+        name: dryrun
+        title: dryrun
+        description: 'Use --dryrun? Displays the operations that would be performed using the specified command without actually running them.'
+      - type: Boolean
+        name: delete
+        title: delete
+        description: 'Use --delete? Files that exist in the destination but not in the source are deleted during sync.'        
+      - type: String
+        name: options
+        title: options
+        description: 'extra options'
+      - type: String
+        name: access_key
+        title: access_key
+        description: 'Access Key ID'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+      - type: String
+        name: secret_access_key
+        title: secret_access_key
+        description: 'Secret access Key'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+      - type: String
+        name: default_region
+        title: default_region
+        description: 'The default AWS region'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+  - name: aws-cli-s3-mv-step
+    service: WorkflowNodeStep
+    title: 'aws / s3 / mv'
+    description: 'Moves a local file or S3 object to another location locally or in S3.'
+    plugin-type: script
+    script-interpreter: /usr/bin/env bash
+    script-file: s3-mv
+    script-args: ${config.source} ${config.destination}
+    config:
+      - type: String
+        name: source
+        title: source
+        description: 'the S3 URI or local path'
+      - type: String
+        name: destination
+        title: destination
+        description: 'the S3 URI or local path'
+      - type: String
+        name: include
+        title: include
+        description: 'Do not exclude files or objects in the command that match the specified pattern.'
+      - type: String
+        name: exclude
+        title: exclude
+        description: 'Exclude all files or objects from the command that matches the specified pattern.'        
+      - type: Boolean
+        name: quiet
+        title: quiet
+        description: 'Use --quiet? Does not display the operations performed from the specified command.'
+      - type: Boolean
+        name: recursive
+        title: recursive
+        description: 'Use --recursive?'
+      - type: Boolean
+        name: dryrun
+        title: dryrun
+        description: 'Use --dryrun? Displays the operations that would be performed using the specified command without actually running them.'
+      - type: String
+        name: options
+        title: options
+        description: 'extra options'
+      - type: String
+        name: access_key
+        title: access_key
+        description: 'Access Key ID'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+      - type: String
+        name: secret_access_key
+        title: secret_access_key
+        description: 'Secret access Key'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+      - type: String
+        name: default_region
+        title: default_region
+        description: 'The default AWS region'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials          
+  - name: aws-cli-s3-sync-step
+    service: WorkflowNodeStep
+    title: 'aws / s3 / sync'
+    description: 'Syncs directories and S3 prefixes.'
+    plugin-type: script
+    script-interpreter: /usr/bin/env bash
+    script-file: s3-sync
+    script-args: ${config.source} ${config.destination}
+    config:
+      - type: String
+        name: source
+        title: source
+        description: 'the S3 URI or local path'
+      - type: String
+        name: destination
+        title: destination
+        description: 'the S3 URI or local path'
+      - type: String
+        name: include
+        title: include
+        description: 'Do not exclude files or objects in the command that match the specified pattern' 
+      - type: String
+        name: exclude
+        title: exclude
+        description: 'Exclude all files or objects from the command that matches the specified pattern.'
+      - type: Boolean
+        name: quiet
+        title: quiet
+        description: 'Use --quiet?'
+      - type: Boolean
+        name: recursive
+        title: recursive
+        description: 'Use --recursive?'
+      - type: Boolean
+        name: dryrun
+        title: dryrun
+        description: 'Use --dryrun?'
+      - type: String
+        name: options
+        title: options
+        description: 'extra options'
+      - type: String
+        name: access_key
+        title: access_key
+        description: 'Access Key ID'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+      - type: String
+        name: secret_access_key
+        title: secret_access_key
+        description: 'Secret access Key'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+      - type: String
+        name: default_region
+        title: default_region
+        description: 'The default AWS region'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+  - name: aws-cli-s3-ls-step
+    service: WorkflowNodeStep
+    title: 'aws / s3 / ls'
+    description: 'List S3 objects and common prefixes under a prefix or all S3 buckets.'
+    plugin-type: script
+    script-interpreter: /usr/bin/env bash
+    script-file: s3-ls
+    script-args: ${config.S3Uri}
+    config:
+      - type: String
+        name: S3Uri
+        title: S3Uri
+        description: 'the S3 URI'
+      - type: Boolean
+        name: recursive
+        title: recursive
+        description: 'Use --recursive?'
+      - type: Boolean
+        name: human-readable
+        title: human-readable
+        description: 'Use --human-readable? Displays file sizes in human readable format.'
+      - type: Boolean
+        name: summarize
+        title: summarize
+        description: 'Use --summarize? Displays summary information (number of objects, total size).'
+      - type: String
+        name: page-size
+        title: page-size
+        description: 'The number of results to return in each response to a list operation.'
+        default: "1000"
+      - type: String
+        name: access_key
+        title: access_key
+        description: 'Access Key ID'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+      - type: String
+        name: secret_access_key
+        title: secret_access_key
+        description: 'Secret access Key'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+      - type: String
+        name: default_region
+        title: default_region
+        description: 'The default AWS region'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+  - name: aws-cli-s3-rm-step
+    service: WorkflowNodeStep
+    title: 'aws / s3 / rm'
+    description: 'Deletes an S3 object.'
+    plugin-type: script
+    script-interpreter: /usr/bin/env bash
+    script-file: s3-rm
+    script-args: ${config.S3Uri}
+    config:
+      - type: String
+        name: S3Uri
+        title: S3Uri
+        description: 'the S3 URI'
+      - type: String
+        name: include
+        title: include
+        description: 'Do not exclude files or objects in the command that match the specified pattern.'
+      - type: String
+        name: exclude
+        title: exclude
+        description: 'Exclude all files or objects from the command that matches the specified pattern.'
+      - type: Boolean
+        name: dryrun
+        title: dryrun
+        description: 'Use --dryrun?  Displays the operations that would be performed.'        
+      - type: Boolean
+        name: recursive
+        title: recursive
+        description: 'Use --recursive? Command is performed on all files or objects under the specified directory.'
+      - type: Boolean
+        name: only-show-errors
+        title: only-show-errors
+        description: 'Use --only-show-errors? Only errors and warnings are displayed.'
+      - type: String
+        name: page-size
+        title: page-size
+        description: 'The number of results to return in each response to a list operation.'
+        default: "1000"
+      - type: String
+        name: access_key
+        title: access_key
+        description: 'Access Key ID'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+      - type: String
+        name: secret_access_key
+        title: secret_access_key
+        description: 'Secret access Key'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+      - type: String
+        name: default_region
+        title: default_region
+        description: 'The default AWS region'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials          
+  - name: aws-cli-s3-mb-step
+    service: WorkflowNodeStep
+    title: 'aws / s3 / mb'
+    description: 'Creates an S3 bucket.'
+    plugin-type: script
+    script-interpreter: /usr/bin/env bash
+    script-file: s3-mb
+    script-args: ${config.S3Uri}
+    config:
+      - type: String
+        name: S3Uri
+        title: S3Uri
+        description: 'the S3 URI'
+      - type: String
+        name: access_key
+        title: access_key
+        description: 'Access Key ID'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+      - type: String
+        name: secret_access_key
+        title: secret_access_key
+        description: 'Secret access Key'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+      - type: String
+        name: default_region
+        title: default_region
+        description: 'The default AWS region'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+  - name: aws-cli-s3-mb-step
+    service: WorkflowNodeStep
+    title: 'aws / s3 / rb'
+    description: 'Deletes an empty S3 bucket.'
+    plugin-type: script
+    script-interpreter: /usr/bin/env bash
+    script-file: s3-mb
+    script-args: ${config.S3Uri}
+    config:
+      - type: String
+        name: S3Uri
+        title: S3Uri
+        description: 'the S3 URI'
+      - type: Boolean
+        name: force
+        title: force
+        description: 'Use --force? Deletes all objects in the bucket including the bucket itself.'
+      - type: String
+        name: access_key
+        title: access_key
+        description: 'Access Key ID'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+      - type: String
+        name: secret_access_key
+        title: secret_access_key
+        description: 'Secret access Key'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+      - type: String
+        name: default_region
+        title: default_region
+        description: 'The default AWS region'
+        renderingOptions:
+          grouping: secondary
+          groupName: Credentials

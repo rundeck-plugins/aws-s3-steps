@@ -1,0 +1,22 @@
+#!/bin/bash
+# s3-rb
+set -eu
+
+(( $# != 1 )) && {
+   echo >&2 "usage: $0 S3Uri"
+   exit 2
+}
+
+
+declare -r S3Uri=$1
+
+[[ ${RD_CONFIG_FORCE} == "true" ]] && FORCE="--force"
+[[ -n "${RD_CONFIG_ACCESS_KEY:-}" ]]        && export AWS_ACCESS_KEY_ID=${RD_CONFIG_ACCESS_KEY}
+[[ -n "${RD_CONFIG_SECRET_ACCESS_KEY:-}" ]] && export AWS_SECRET_ACCESS_KEY=${RD_CONFIG_SECRET_ACCESS_KEY}
+[[ -n "${RD_CONFIG_DEFAULT_REGION:-}" ]]    && export AWS_DEFAULT_REGION=${RD_CONFIG_DEFAULT_REGION}
+
+aws s3 rb "$S3Uri" ${FORCE:-}
+
+
+exit $?
+# Done

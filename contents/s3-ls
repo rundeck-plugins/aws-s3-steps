@@ -1,0 +1,27 @@
+#!/bin/bash
+# s3-ls
+set -eu
+
+(( $# != 1 )) && {
+   echo >&2 "usage: $0 S3Uri"
+   exit 2
+}
+
+declare -r S3Uri=$1
+
+declare -a CLOPTS=()
+[[ "${RD_CONFIG_RECURSIVE:-}" == true ]]      && CLOPTS+=(--recursive)
+[[ "${RD_CONFIG_HUMAN_READABLE:-}" == true ]] && CLOPTS+=(--human-readable)
+[[ "${RD_CONFIG_SUMMARIZE:-}" == true ]]      && CLOPTS+=(--summarize)
+[[ -n "${RD_CONFIG_PAGE_SIZE:-}" ]]           && CLOPTS+=(--page-size $RD_CONFIG_PAGE_SIZE)
+
+
+[[ -n "${RD_CONFIG_ACCESS_KEY:-}" ]]        && export AWS_ACCESS_KEY_ID=${RD_CONFIG_ACCESS_KEY}
+[[ -n "${RD_CONFIG_SECRET_ACCESS_KEY:-}" ]] && export AWS_SECRET_ACCESS_KEY=${RD_CONFIG_SECRET_ACCESS_KEY}
+[[ -n "${RD_CONFIG_DEFAULT_REGION:-}" ]]    && export AWS_DEFAULT_REGION=${RD_CONFIG_DEFAULT_REGION}
+
+aws s3 ls "$S3Uri" "${CLOPTS[@]:-}"
+
+
+exit $?
+# Done
