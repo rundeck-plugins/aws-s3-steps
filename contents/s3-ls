@@ -1,27 +1,39 @@
-#!/bin/bash
+#!/usr/bin/env python
 # s3-ls
-set -eu
+import argparse
+import os
+import subprocess
+import sys
 
-(( $# != 1 )) && {
-   echo >&2 "usage: $0 S3Uri"
-   exit 2
-}
+parser = argparse.ArgumentParser(description='List S3 objects and common prefixes under a prefix or all S3 buckets.')
+parser.add_argument('s3Uri', help='the s3 URI')
+args = parser.parse_args()
 
-declare -r S3Uri=$1
+COMMAND=["aws", "s3", "ls", args.s3Uri]
 
-declare -a CLOPTS=()
-[[ "${RD_CONFIG_RECURSIVE:-}" == true ]]      && CLOPTS+=(--recursive)
-[[ "${RD_CONFIG_HUMAN_READABLE:-}" == true ]] && CLOPTS+=(--human-readable)
-[[ "${RD_CONFIG_SUMMARIZE:-}" == true ]]      && CLOPTS+=(--summarize)
-[[ -n "${RD_CONFIG_PAGE_SIZE:-}" ]]           && CLOPTS+=(--page-size $RD_CONFIG_PAGE_SIZE)
+if os.getenv("RD_CONFIG_RECURSIVE") == "true":
+	COMMAND.append("--recursive")
+if os.getenv("RD_CONFIG_HUMAN_READABLE") == "true":
+	COMMAND.append("--human-readable")
+if os.getenv("RD_CONFIG_SUMMARIZE") == "true":
+	COMMAND.append("--summarize")
+if "RD_CONFIG_PAGE_SIZE" in os.environ:
+    COMMAND.append("--page-size")
+    COMMAND.append(os.getenv("RD_CONFIG_PAGE_SIZE"))
 
+if "RD_CONFIG_ACCESS_KEY" in os.environ:
+    os.environ["AWS_ACCESS_KEY_ID"] = os.environ["RD_CONFIG_ACCESS_KEY"]
+if "RD_CONFIG_SECRET_ACCESS_KEY" in os.environ:
+	os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ["RD_CONFIG_SECRET_ACCESS_KEY"]
+if "RD_CONFIG_DEFAULT_REGION" in os.environ:
+	os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
 
-[[ -n "${RD_CONFIG_ACCESS_KEY:-}" ]]        && export AWS_ACCESS_KEY_ID=${RD_CONFIG_ACCESS_KEY}
-[[ -n "${RD_CONFIG_SECRET_ACCESS_KEY:-}" ]] && export AWS_SECRET_ACCESS_KEY=${RD_CONFIG_SECRET_ACCESS_KEY}
-[[ -n "${RD_CONFIG_DEFAULT_REGION:-}" ]]    && export AWS_DEFAULT_REGION=${RD_CONFIG_DEFAULT_REGION}
+#print >>sys.stdout, "debug: COMMAND: ", COMMAND
 
-aws s3 ls "$S3Uri" "${CLOPTS[@]:-}"
-
-
-exit $?
+try:
+    retcode = subprocess.call(COMMAND)
+    sys.exit(retcode)
+except OSError as e:
+    print >>sys.stderr, "Command error:", e
+    sys.exit(1)
 # Done

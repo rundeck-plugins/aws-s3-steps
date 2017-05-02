@@ -1,28 +1,46 @@
-#!/bin/bash
+#!/usr/bin/env python
 # s3-mv
-set -eu
+import argparse
+import os
+import subprocess
+import sys
 
-(( $# != 2 )) && {
-   echo >&2 "usage: $0 source destination"
-   exit 2
-}
+parser = argparse.ArgumentParser(description='Moves a local file or S3 object to another location locally or in S3.')
+parser.add_argument('source', help='the source (LocalPath or S3Uri)')
+parser.add_argument('destination', help='the destination (LocalPath or S3Uri)')
+args = parser.parse_args()
+
+COMMAND=["aws", "s3", "mv", args.source, args.destination]
+
+if os.getenv("RD_CONFIG_QUIET") == "true":
+	COMMAND.append("--quiet")
+if os.getenv("RD_CONFIG_RECURSIVE") == "true":
+	COMMAND.append("--recursive")
+if os.getenv("RD_CONFIG_DRYRUN") == "true":
+	COMMAND.append("--dryrun")
+if os.getenv("RD_CONFIG_DELETE") == "true":
+	COMMAND.append("--delete")	
+if "RD_CONFIG_INCLUDE" in os.environ:
+    COMMAND.append("--include")
+    COMMAND.append(os.getenv("RD_CONFIG_INCLUDE"))
+if "RD_CONFIG_EXCLUDE" in os.environ:
+    COMMAND.append("--exclude")
+    COMMAND.append(os.getenv("RD_CONFIG_EXCLUDE"))
 
 
-declare -r SOURCE=$1 DESTINATION=$2
+if "RD_CONFIG_ACCESS_KEY" in os.environ:
+    os.environ["AWS_ACCESS_KEY_ID"] = os.environ["RD_CONFIG_ACCESS_KEY"]
+if "RD_CONFIG_SECRET_ACCESS_KEY" in os.environ:
+	os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ["RD_CONFIG_SECRET_ACCESS_KEY"]
+if "RD_CONFIG_DEFAULT_REGION" in os.environ:
+	os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
 
-declare -a CLOPTS=()
-[[ "${RD_CONFIG_QUIET:-}" == true ]]     && CLOPTS+=(--quiet)
-[[ "${RD_CONFIG_RECURSIVE:-}" == true ]] && CLOPTS+=(--recursive)
-[[ "${RD_CONFIG_DRYRUN:-}" == true ]]    && CLOPTS+=(--dryrun)
-[[ -n "${RD_CONFIG_OPTIONS:-}" ]]        && CLOPTS+=($RD_CONFIG_OPTIONS)
+#print >>sys.stdout, "debug: COMMAND: ", COMMAND
 
-
-[[ -n "${RD_CONFIG_ACCESS_KEY:-}" ]]        && export AWS_ACCESS_KEY_ID=${RD_CONFIG_ACCESS_KEY}
-[[ -n "${RD_CONFIG_SECRET_ACCESS_KEY:-}" ]] && export AWS_SECRET_ACCESS_KEY=${RD_CONFIG_SECRET_ACCESS_KEY}
-[[ -n "${RD_CONFIG_DEFAULT_REGION:-}" ]]    && export AWS_DEFAULT_REGION=${RD_CONFIG_DEFAULT_REGION}
-
-aws s3 mv "$SOURCE" "$DESTINATION" "${CLOPTS[@]:-}"
-
-
-exit $?
+try:
+    retcode = subprocess.call(COMMAND)
+    sys.exit(retcode)
+except OSError as e:
+    print >>sys.stderr, "Command error:", e
+    sys.exit(1)
 # Done

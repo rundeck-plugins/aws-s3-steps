@@ -1,5 +1,5 @@
 name: aws-cli-plugin
-version: 1.0.0
+version: 1.0.1
 rundeckPluginVersion: 1.2
 author: alexh
 date: Tue Feb 16 2016
@@ -9,7 +9,7 @@ providers:
     title: 'aws / s3 / cp'
     description: 'Copies a local file or S3 object to another location locally or in S3.'
     plugin-type: script
-    script-interpreter: /usr/bin/env bash
+    script-interpreter: python -u
     script-file: s3-cp
     script-args: ${config.source} ${config.destination}
     config:
@@ -46,10 +46,6 @@ providers:
         title: delete
         description: 'Use --delete? Files that exist in the destination but not in the source are deleted during sync.'        
       - type: String
-        name: options
-        title: options
-        description: 'extra options'
-      - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
@@ -78,7 +74,7 @@ providers:
     title: 'aws / s3 / mv'
     description: 'Moves a local file or S3 object to another location locally or in S3.'
     plugin-type: script
-    script-interpreter: /usr/bin/env bash
+    script-interpreter: python -u
     script-file: s3-mv
     script-args: ${config.source} ${config.destination}
     config:
@@ -111,10 +107,6 @@ providers:
         title: dryrun
         description: 'Use --dryrun? Displays the operations that would be performed using the specified command without actually running them.'
       - type: String
-        name: options
-        title: options
-        description: 'extra options'
-      - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
@@ -143,7 +135,7 @@ providers:
     title: 'aws / s3 / sync'
     description: 'Syncs directories and S3 prefixes.'
     plugin-type: script
-    script-interpreter: /usr/bin/env bash
+    script-interpreter: python -u
     script-file: s3-sync
     script-args: ${config.source} ${config.destination}
     config:
@@ -176,10 +168,6 @@ providers:
         title: dryrun
         description: 'Use --dryrun?'
       - type: String
-        name: options
-        title: options
-        description: 'extra options'
-      - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
@@ -208,7 +196,7 @@ providers:
     title: 'aws / s3 / ls'
     description: 'List S3 objects and common prefixes under a prefix or all S3 buckets.'
     plugin-type: script
-    script-interpreter: /usr/bin/env bash
+    script-interpreter: python -u
     script-file: s3-ls
     script-args: ${config.S3Uri}
     config:
@@ -262,7 +250,7 @@ providers:
     title: 'aws / s3 / rm'
     description: 'Deletes an S3 object.'
     plugin-type: script
-    script-interpreter: /usr/bin/env bash
+    script-interpreter: python -u
     script-file: s3-rm
     script-args: ${config.S3Uri}
     config:
@@ -324,7 +312,7 @@ providers:
     title: 'aws / s3 / mb'
     description: 'Creates an S3 bucket.'
     plugin-type: script
-    script-interpreter: /usr/bin/env bash
+    script-interpreter: python -u
     script-file: s3-mb
     script-args: ${config.S3Uri}
     config:
@@ -361,7 +349,7 @@ providers:
     title: 'aws / s3 / rb'
     description: 'Deletes an empty S3 bucket.'
     plugin-type: script
-    script-interpreter: /usr/bin/env bash
+    script-interpreter: python -u
     script-file: s3-mb
     script-args: ${config.S3Uri}
     config:
