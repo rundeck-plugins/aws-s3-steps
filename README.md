@@ -17,3 +17,31 @@ To build the plugin:
 To install the plugin:
 
     cp aws-s3-steps.zip $RDECK_BASE/libext
+    
+## Example Job
+
+- description: 'Copy the contents of /tmp/stuff to an s3 folder'
+  executionEnabled: true
+  group: aws-s3-example
+  loglevel: INFO
+  name: cp
+  nodeFilterEditable: false
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        access_key: XXXXXXXXXXXXXXXXXXX
+        delete: 'false'
+        destination: s3://rdprotesting/tmp
+        dryrun: 'false'
+        quiet: 'false'
+        recursive: 'true'
+        secret_access_key: keys/s3-examples/my.secretkey
+        source: /tmp/stuff
+      nodeStep: true
+      type: aws-cli-s3-cp-step
+    keepgoing: false
+    pluginConfig:
+      WorkflowStrategy:
+        node-first: null
+    strategy: node-first
