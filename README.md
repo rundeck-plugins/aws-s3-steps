@@ -20,6 +20,7 @@ To install the plugin:
     
 ## Example Job
 
+```yaml
 - description: 'Copy the contents of /tmp/stuff to an s3 folder'
   executionEnabled: true
   group: aws-s3-example
@@ -45,3 +46,4 @@ To install the plugin:
       WorkflowStrategy:
         node-first: null
     strategy: node-first
+```
