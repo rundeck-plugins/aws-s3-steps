@@ -10,17 +10,17 @@ parser.add_argument('s3Uri', help='the s3 URI')
 args = parser.parse_args()
 
 
-COMMAND=["aws", "s3", "rm", args.s3Uri]
+COMMAND = ["aws", "s3", "rm", args.s3Uri]
 
 
 if os.getenv("RD_CONFIG_QUIET") == "true":
-	COMMAND.append("--quiet")
+    COMMAND.append("--quiet")
 if os.getenv("RD_CONFIG_RECURSIVE") == "true":
-	COMMAND.append("--recursive")
+    COMMAND.append("--recursive")
 if os.getenv("RD_CONFIG_DRYRUN") == "true":
-	COMMAND.append("--dryrun")
+    COMMAND.append("--dryrun")
 if os.getenv("RD_CONFIG_DELETE") == "true":
-	COMMAND.append("--delete")	
+    COMMAND.append("--delete")
 if "RD_CONFIG_INCLUDE" in os.environ:
     COMMAND.append("--include")
     COMMAND.append(os.getenv("RD_CONFIG_INCLUDE"))
@@ -28,15 +28,15 @@ if "RD_CONFIG_EXCLUDE" in os.environ:
     COMMAND.append("--exclude")
     COMMAND.append(os.getenv("RD_CONFIG_EXCLUDE"))
 if os.getenv("RD_CONFIG_ONLY_SHOW_ERRORS") == "true":
-	COMMAND.append("--only-show-errors")
+    COMMAND.append("--only-show-errors")
 
 
 if "RD_CONFIG_ACCESS_KEY" in os.environ:
     os.environ["AWS_ACCESS_KEY_ID"] = os.environ["RD_CONFIG_ACCESS_KEY"]
 if "RD_CONFIG_SECRET_ACCESS_KEY" in os.environ:
-	os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ["RD_CONFIG_SECRET_ACCESS_KEY"]
+    os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ["RD_CONFIG_SECRET_ACCESS_KEY"]
 if "RD_CONFIG_DEFAULT_REGION" in os.environ:
-	os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
+    os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
 
 try:
     retcode = subprocess.call(COMMAND)

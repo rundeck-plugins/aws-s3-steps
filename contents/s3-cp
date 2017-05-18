@@ -10,17 +10,17 @@ parser.add_argument('source', help='the source (LocalPath or S3Uri)')
 parser.add_argument('destination', help='the destination (LocalPath or S3Uri)')
 args = parser.parse_args()
 
-COMMAND=["aws", "s3", "cp", args.source, args.destination]
+COMMAND = ["aws", "s3", "cp", args.source, args.destination]
 
 
 if os.getenv("RD_CONFIG_QUIET") == "true":
-	COMMAND.append("--quiet")
+    COMMAND.append("--quiet")
 if os.getenv("RD_CONFIG_RECURSIVE") == "true":
-	COMMAND.append("--recursive")
+    COMMAND.append("--recursive")
 if os.getenv("RD_CONFIG_DRYRUN") == "true":
-	COMMAND.append("--dryrun")
+    COMMAND.append("--dryrun")
 if os.getenv("RD_CONFIG_DELETE") == "true":
-	COMMAND.append("--delete")	
+    COMMAND.append("--delete")
 if "RD_CONFIG_INCLUDE" in os.environ:
     COMMAND.append("--include")
     COMMAND.append(os.getenv("RD_CONFIG_INCLUDE"))

@@ -9,14 +9,14 @@ parser = argparse.ArgumentParser(description='List S3 objects and common prefixe
 parser.add_argument('s3Uri', help='the s3 URI')
 args = parser.parse_args()
 
-COMMAND=["aws", "s3", "ls", args.s3Uri]
+COMMAND = ["aws", "s3", "ls", args.s3Uri]
 
 if os.getenv("RD_CONFIG_RECURSIVE") == "true":
-	COMMAND.append("--recursive")
+    COMMAND.append("--recursive")
 if os.getenv("RD_CONFIG_HUMAN_READABLE") == "true":
-	COMMAND.append("--human-readable")
+    COMMAND.append("--human-readable")
 if os.getenv("RD_CONFIG_SUMMARIZE") == "true":
-	COMMAND.append("--summarize")
+    COMMAND.append("--summarize")
 if "RD_CONFIG_PAGE_SIZE" in os.environ:
     COMMAND.append("--page-size")
     COMMAND.append(os.getenv("RD_CONFIG_PAGE_SIZE"))
@@ -24,11 +24,10 @@ if "RD_CONFIG_PAGE_SIZE" in os.environ:
 if "RD_CONFIG_ACCESS_KEY" in os.environ:
     os.environ["AWS_ACCESS_KEY_ID"] = os.environ["RD_CONFIG_ACCESS_KEY"]
 if "RD_CONFIG_SECRET_ACCESS_KEY" in os.environ:
-	os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ["RD_CONFIG_SECRET_ACCESS_KEY"]
+    os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ["RD_CONFIG_SECRET_ACCESS_KEY"]
 if "RD_CONFIG_DEFAULT_REGION" in os.environ:
-	os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
+    os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
 
-#print >>sys.stdout, "debug: COMMAND: ", COMMAND
 
 try:
     retcode = subprocess.call(COMMAND)

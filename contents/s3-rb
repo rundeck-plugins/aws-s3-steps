@@ -10,19 +10,18 @@ parser = argparse.ArgumentParser(description='Creates an S3 bucket.')
 parser.add_argument('s3Uri', help='the s3 URI')
 args = parser.parse_args()
 
-COMMAND=["aws", "s3", "rb", args.s3Uri]
+COMMAND = ["aws", "s3", "rb", args.s3Uri]
 
 if os.getenv("RD_CONFIG_FORCE") == "true":
-	COMMAND.append("--force")
+    COMMAND.append("--force")
 
 if "RD_CONFIG_ACCESS_KEY" in os.environ:
     os.environ["AWS_ACCESS_KEY_ID"] = os.environ["RD_CONFIG_ACCESS_KEY"]
 if "RD_CONFIG_SECRET_ACCESS_KEY" in os.environ:
-	os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ["RD_CONFIG_SECRET_ACCESS_KEY"]
+    os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ["RD_CONFIG_SECRET_ACCESS_KEY"]
 if "RD_CONFIG_DEFAULT_REGION" in os.environ:
-	os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
+    os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
 
-#print >>sys.stdout, "debug: COMMAND: ", COMMAND
 
 try:
     retcode = subprocess.call(COMMAND)
