@@ -8,7 +8,7 @@ The following steps are available:
 * mv
 * rb
 * rm
-* syn
+* sync
 
 To build the plugin:
 
