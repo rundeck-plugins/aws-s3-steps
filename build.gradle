@@ -16,16 +16,25 @@ ext.archivesBaseName = "rundeckpro-aws-s3-steps"
 ext.archiveFilename = ext.archivesBaseName + '-' + version 
 
 
-
 scmVersion {
+    ignoreUncommittedChanges = false
     tag {
-        prefix = 'aws-s3-steps'
+        prefix = 'v'
+        versionSeparator = ''
+        def origDeserialize=deserialize
+        //apend .0 to satisfy semver if the tag version is only X.Y
+        deserialize = { config, position, tagName ->
+            def orig = origDeserialize(config, position, tagName)
+            if (orig.split('\\.').length < 3) {
+                orig += ".0"
+            }
+            orig
+        }
     }
 }
 
-project.version = scmVersion.version
 
-println project.version 
+project.version = scmVersion.version
 
 
 apply from: 'https://raw.githubusercontent.com/rundeck-plugins/build-zip/master/build.gradle'
