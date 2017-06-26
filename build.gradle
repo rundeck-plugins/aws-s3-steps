@@ -43,6 +43,9 @@ apply from: 'https://raw.githubusercontent.com/rundeck-plugins/build-zip/master/
 task build(dependsOn: ['pluginZip']) << {
 }
 
+task install(dependsOn: ['build']) << {
+}
+
 task clean(type: Delete) {
     delete('build')
 }
