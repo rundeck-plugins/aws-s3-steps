@@ -29,7 +29,9 @@ if "RD_CONFIG_EXCLUDE" in os.environ:
     COMMAND.append(os.getenv("RD_CONFIG_EXCLUDE"))
 if os.getenv("RD_CONFIG_ONLY_SHOW_ERRORS") == "true":
     COMMAND.append("--only-show-errors")
-
+if "RD_CONFIG_ENDPOINT_URL" in os.environ:
+    COMMAND.append("--endpoint-url")
+    COMMAND.append(os.getenv("RD_CONFIG_ENDPOINT_URL"))
 
 if "RD_CONFIG_ACCESS_KEY" in os.environ:
     os.environ["AWS_ACCESS_KEY_ID"] = os.environ["RD_CONFIG_ACCESS_KEY"]

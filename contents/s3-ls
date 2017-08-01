@@ -20,7 +20,9 @@ if os.getenv("RD_CONFIG_SUMMARIZE") == "true":
 if "RD_CONFIG_PAGE_SIZE" in os.environ:
     COMMAND.append("--page-size")
     COMMAND.append(os.getenv("RD_CONFIG_PAGE_SIZE"))
-
+if "RD_CONFIG_ENDPOINT_URL" in os.environ:
+    COMMAND.append("--endpoint-url")
+    COMMAND.append(os.getenv("RD_CONFIG_ENDPOINT_URL"))
 if "RD_CONFIG_ACCESS_KEY" in os.environ:
     os.environ["AWS_ACCESS_KEY_ID"] = os.environ["RD_CONFIG_ACCESS_KEY"]
 if "RD_CONFIG_SECRET_ACCESS_KEY" in os.environ:
@@ -28,6 +30,7 @@ if "RD_CONFIG_SECRET_ACCESS_KEY" in os.environ:
 if "RD_CONFIG_DEFAULT_REGION" in os.environ:
     os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
 
+#print >>sys.stdout, "debug: COMMAND: ", COMMAND
 
 try:
     retcode = subprocess.call(COMMAND)

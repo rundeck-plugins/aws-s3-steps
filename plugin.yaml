@@ -1,5 +1,5 @@
 name: aws-cli-plugin
-version: 1.0.1
+version: 1.0.2
 rundeckPluginVersion: 1.2
 author: alexh
 date: Tue Feb 16 2016
@@ -44,31 +44,37 @@ providers:
       - type: Boolean
         name: delete
         title: delete
-        description: 'Use --delete? Files that exist in the destination but not in the source are deleted during sync.'        
+        description: 'Use --delete? Files that exist in the destination but not in the source are deleted during sync.'
+      - type: String
+        name: endpoint_url
+        title: Endpoint URL
+        renderingOptions:
+          grouping: secondary
+          groupName: Connection        
       - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
       - type: String
         name: secret_access_key
         title: secret_access_key
         description: 'Secret access Key'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
           selectionAccessor: "STORAGE_PATH"
           valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
           storage-path-root: "keys"
       - type: String
         name: default_region
-        title: default_region
+        title: Default region
         description: 'The default AWS region'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
   - name: aws-cli-s3-mv-step
     service: WorkflowNodeStep
     title: 'aws / s3 / mv'
@@ -107,19 +113,25 @@ providers:
         title: dryrun
         description: 'Use --dryrun? Displays the operations that would be performed using the specified command without actually running them.'
       - type: String
+        name: endpoint_url
+        title: Endpoint URL
+        renderingOptions:
+          grouping: secondary
+          groupName: Connection        
+      - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
       - type: String
         name: secret_access_key
         title: secret_access_key
         description: 'Secret access Key'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
           selectionAccessor: "STORAGE_PATH"
           valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
           storage-path-root: "keys"
@@ -129,7 +141,7 @@ providers:
         description: 'The default AWS region'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials          
+          groupName: Connection          
   - name: aws-cli-s3-sync-step
     service: WorkflowNodeStep
     title: 'aws / s3 / sync'
@@ -168,19 +180,25 @@ providers:
         title: dryrun
         description: 'Use --dryrun?'
       - type: String
+        name: endpoint_url
+        title: Endpoint URL
+        renderingOptions:
+          grouping: secondary
+          groupName: Connection        
+      - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
       - type: String
         name: secret_access_key
         title: secret_access_key
         description: 'Secret access Key'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
           selectionAccessor: "STORAGE_PATH"
           valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
           storage-path-root: "keys"
@@ -190,7 +208,7 @@ providers:
         description: 'The default AWS region'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
   - name: aws-cli-s3-ls-step
     service: WorkflowNodeStep
     title: 'aws / s3 / ls'
@@ -222,19 +240,25 @@ providers:
         description: 'The number of results to return in each response to a list operation.'
         default: "1000"
       - type: String
+        name: endpoint_url
+        title: Endpoint URL
+        renderingOptions:
+          grouping: secondary
+          groupName: Connection        
+      - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
       - type: String
         name: secret_access_key
         title: secret_access_key
         description: 'Secret access Key'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
           selectionAccessor: "STORAGE_PATH"
           valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
           storage-path-root: "keys"
@@ -244,7 +268,7 @@ providers:
         description: 'The default AWS region'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
   - name: aws-cli-s3-rm-step
     service: WorkflowNodeStep
     title: 'aws / s3 / rm'
@@ -284,19 +308,25 @@ providers:
         description: 'The number of results to return in each response to a list operation.'
         default: "1000"
       - type: String
+        name: endpoint_url
+        title: Endpoint URL
+        renderingOptions:
+          grouping: secondary
+          groupName: Connection        
+      - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
       - type: String
         name: secret_access_key
         title: secret_access_key
         description: 'Secret access Key'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
           selectionAccessor: "STORAGE_PATH"
           valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
           storage-path-root: "keys"
@@ -306,7 +336,7 @@ providers:
         description: 'The default AWS region'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials          
+          groupName: Connection          
   - name: aws-cli-s3-mb-step
     service: WorkflowNodeStep
     title: 'aws / s3 / mb'
@@ -321,19 +351,25 @@ providers:
         title: S3Uri
         description: 'the S3 URI'
       - type: String
+        name: endpoint_url
+        title: Endpoint URL
+        renderingOptions:
+          grouping: secondary
+          groupName: Connection        
+      - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
       - type: String
         name: secret_access_key
         title: secret_access_key
         description: 'Secret access Key'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
           selectionAccessor: "STORAGE_PATH"
           valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
           storage-path-root: "keys"
@@ -343,7 +379,7 @@ providers:
         description: 'The default AWS region'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
   - name: aws-cli-s3-mb-step
     service: WorkflowNodeStep
     title: 'aws / s3 / rb'
@@ -362,19 +398,25 @@ providers:
         title: force
         description: 'Use --force? Deletes all objects in the bucket including the bucket itself.'
       - type: String
+        name: endpoint_url
+        title: Endpoint URL
+        renderingOptions:
+          grouping: secondary
+          groupName: Connection        
+      - type: String
         name: access_key
         title: access_key
         description: 'Access Key ID'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
       - type: String
         name: secret_access_key
         title: secret_access_key
         description: 'Secret access Key'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection
           selectionAccessor: "STORAGE_PATH"
           valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
           storage-path-root: "keys"
@@ -384,4 +426,4 @@ providers:
         description: 'The default AWS region'
         renderingOptions:
           grouping: secondary
-          groupName: Credentials
+          groupName: Connection

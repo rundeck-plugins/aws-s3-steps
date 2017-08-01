@@ -21,7 +21,9 @@ if "RD_CONFIG_SECRET_ACCESS_KEY" in os.environ:
     os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ["RD_CONFIG_SECRET_ACCESS_KEY"]
 if "RD_CONFIG_DEFAULT_REGION" in os.environ:
     os.environ["AWS_DEFAULT_REGION"] = os.environ["RD_CONFIG_DEFAULT_REGION"]
-
+if "RD_CONFIG_ENDPOINT_URL" in os.environ:
+    COMMAND.append("--endpoint-url")
+    COMMAND.append(os.getenv("RD_CONFIG_ENDPOINT_URL"))
 
 try:
     retcode = subprocess.call(COMMAND)
