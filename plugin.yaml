@@ -1,6 +1,6 @@
 name: aws-cli-plugin
 version: 1.2.1
-rundeckPluginVersion: 1.2
+rundeckPluginVersion: 1.2.2
 author: alexh
 date: Tue Feb 16 2016
 providers:
@@ -380,7 +380,7 @@ providers:
         renderingOptions:
           grouping: secondary
           groupName: Connection
-  - name: aws-cli-s3-mb-step
+  - name: aws-cli-s3-rb-step
     service: WorkflowNodeStep
     title: 'aws / s3 / rb'
     description: 'Deletes an empty S3 bucket.'
