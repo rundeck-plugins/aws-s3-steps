@@ -388,7 +388,7 @@ providers:
     description: 'Deletes an empty S3 bucket.'
     plugin-type: script
     script-interpreter: python -u
-    script-file: s3-mb
+    script-file: s3-rb
     script-args: ${config.S3Uri}
     config:
       - type: String
