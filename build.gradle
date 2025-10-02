@@ -1,20 +1,18 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 plugins {
+    id 'maven-publish'
     id 'pl.allegro.tech.build.axion-release' version '1.18.17'
 }
 
-ext.pluginName = 'AWS S3 Steps'
-ext.pluginDescription = "Simple shell wrapper around aws s3 CLI to expose subcommands as node steps"
-ext.sopsCopyright = "© 2017, Rundeck, Inc."
-ext.sopsUrl = "http://rundeck.com"
-ext.buildDateString=new Date().format("yyyy-MM-dd'T'HH:mm:ssX")
-ext.archivesBaseName = "aws-s3-steps"
-ext.pluginBaseFolder = "."
+// Plugin metadata
+ext {
+    pluginName = 'AWS S3 Steps'
+    pluginDescription = "Simple shell wrapper around AWS S3 CLI to expose subcommands as node steps"
+    sopsCopyright = "© 2025, Rundeck, Inc."
+    sopsUrl = "http://rundeck.com"
+    buildDateString = new Date().format("yyyy-MM-dd'T'HH:mm:ssX")
+    archivesBaseName = "aws-s3-steps"
+    pluginBaseFolder = "."
+}
 
 scmVersion {
     ignoreUncommittedChanges = true
@@ -24,35 +22,38 @@ scmVersion {
     }
 }
 
-project.version = scmVersion.version
-ext.archiveFilename = ext.archivesBaseName + '-' + version 
+version = scmVersion.version
+ext.archiveFilename = "${archivesBaseName}-${version}"
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
-defaultTasks 'build'
+// Set default tasks
+defaultTasks('clean', 'build', 'pluginZip')
 
 task pluginZip(type: Jar) {
-    archiveBaseName = project.ext.archivesBaseName
-    archiveVersion = project.version
+    archiveBaseName = archivesBaseName
+    archiveVersion = version
     archiveClassifier = ''
     archiveExtension = 'zip'
-    destinationDirectory = file("build/libs")
+    destinationDirectory = layout.buildDirectory.dir('libs')
 
-    from("${project.buildDir}/zip-contents") {
-        include("*.yaml")
-        include("resources/**")
-        include("contents/*")
-        into(archivesBaseName + '-' + version)
+    from(layout.buildDirectory.dir('zip-contents')) {
+        include('*.yaml')
+        include('resources/**')
+        include('contents/*')
+        into("${archivesBaseName}-${version}")
     }
 
     manifest {
-        attributes 'Rundeck-Plugin-Name': pluginName.toString(),
-                   'Rundeck-Plugin-Description': pluginDescription.toString(),
-                   'Rundeck-Plugin-Archive': 'true',
-                   'Rundeck-Plugin-File-Version': version,
-                   'Rundeck-Plugin-Author': sopsCopyright,
-                   'Rundeck-Plugin-URL': sopsUrl,
-                   'Rundeck-Plugin-Date': buildDateString
+        attributes(
+            'Rundeck-Plugin-Name': pluginName,
+            'Rundeck-Plugin-Description': pluginDescription,
+            'Rundeck-Plugin-Archive': 'true',
+            'Rundeck-Plugin-File-Version': version,
+            'Rundeck-Plugin-Author': sopsCopyright,
+            'Rundeck-Plugin-URL': sopsUrl,
+            'Rundeck-Plugin-Date': buildDateString
+        )
     }
 }
 
@@ -60,34 +61,32 @@ pluginZip.doFirst {
     def assetsMap = new Properties()
     def tokens = assetsMap + [
             version    : version,
-            date       : new Date().format("yyyy-MM-dd'T'HH:mm:ssX").toString(),
+            date       : new Date().format("yyyy-MM-dd'T'HH:mm:ssX"),
             author     : sopsCopyright,
             url        : sopsUrl,
             title      : pluginName,
             description: pluginDescription,
-            name       : archivesBaseName.toString(),
+            name       : archivesBaseName,
     ]
 
     copy {
-        from("${project.projectDir}/resources"){
-            include '**/*'
-            into "resources"
+        from(file('resources')) {
+            include('**/*')
+            into('resources')
         }
 
-        from("${project.projectDir}/contents"){
-            into "contents"
+        from(file('contents')) {
+            into('contents')
         }
 
-        from("${project.projectDir}/plugin.yaml") {
+        from('plugin.yaml') {
             filter(ReplaceTokens, tokens: tokens)
-            exclude '**/*.png'
+            exclude('**/*.png')
         }
 
-        into "${project.buildDir}/zip-contents"
+        into(layout.buildDirectory.dir('zip-contents'))
     }
 }
-
-apply plugin: 'maven-publish'
 
 publishing {
     publications {
@@ -96,8 +95,6 @@ publishing {
         }
     }
 }
-
-defaultTasks 'clean', 'build','pluginZip'
 
 task build(dependsOn: ['pluginZip']) {
 }
