@@ -19,5 +19,20 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/java,gradle
 
-.idea
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Gradle daemon
+.gradle/daemon/
+
+# Build reports
+build/reports/
 
