@@ -1,38 +1,107 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
 plugins {
-    id 'pl.allegro.tech.build.axion-release' version '1.11.0'
+    id 'maven-publish'
+    id 'pl.allegro.tech.build.axion-release' version '1.18.17'
 }
 
-ext.pluginName = 'AWS S3 Steps'
-ext.pluginDescription = "Simple shell wrapper around aws s3 CLI to expose subcommands as node steps"
-ext.sopsCopyright = "© 2017, Rundeck, Inc."
-ext.sopsUrl = "http://rundeck.com"
-ext.buildDateString=new Date().format("yyyy-MM-dd'T'HH:mm:ssX")
-ext.archivesBaseName = "aws-s3-steps"
-ext.pluginBaseFolder = "."
+// Plugin metadata
+ext {
+    pluginName = 'AWS S3 Steps'
+    pluginDescription = "Simple shell wrapper around AWS S3 CLI to expose subcommands as node steps"
+    sopsCopyright = "© 2025, Rundeck, Inc."
+    sopsUrl = "http://rundeck.com"
+    buildDateString = new Date().format("yyyy-MM-dd'T'HH:mm:ssX")
+    archivesBaseName = "aws-s3-steps"
+    pluginBaseFolder = "."
+}
 
 scmVersion {
     ignoreUncommittedChanges = true
     tag {
         prefix = ''
         versionSeparator = ''
-        def origDeserialize=deserialize
-        //apend .0 to satisfy semver if the tag version is only X.Y
-        deserialize = { config, position, tagName ->
-            def orig = origDeserialize(config, position, tagName)
-            if (orig.split('\\.').length < 3) {
-                orig += ".0"
-            }
-            orig
+    }
+}
+
+version = scmVersion.version
+ext.archiveFilename = "${archivesBaseName}-${version}"
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+// Set default tasks
+defaultTasks('clean', 'build', 'pluginZip')
+
+task pluginZip(type: Jar) {
+    archiveBaseName = archivesBaseName
+    archiveVersion = version
+    archiveClassifier = ''
+    archiveExtension = 'zip'
+    destinationDirectory = layout.buildDirectory.dir('libs')
+
+    from(layout.buildDirectory.dir('zip-contents')) {
+        include('*.yaml')
+        include('resources/**')
+        include('contents/*')
+        into("${archivesBaseName}-${version}")
+    }
+
+    manifest {
+        attributes(
+            'Rundeck-Plugin-Name': pluginName,
+            'Rundeck-Plugin-Description': pluginDescription,
+            'Rundeck-Plugin-Archive': 'true',
+            'Rundeck-Plugin-File-Version': version,
+            'Rundeck-Plugin-Author': sopsCopyright,
+            'Rundeck-Plugin-URL': sopsUrl,
+            'Rundeck-Plugin-Date': buildDateString
+        )
+    }
+}
+
+pluginZip.doFirst {
+    def assetsMap = new Properties()
+    def tokens = assetsMap + [
+            version    : version,
+            date       : new Date().format("yyyy-MM-dd'T'HH:mm:ssX"),
+            author     : sopsCopyright,
+            url        : sopsUrl,
+            title      : pluginName,
+            description: pluginDescription,
+            name       : archivesBaseName,
+    ]
+
+    copy {
+        from(file('resources')) {
+            include('**/*')
+            into('resources')
+        }
+
+        from(file('contents')) {
+            into('contents')
+        }
+
+        from('plugin.yaml') {
+            filter(ReplaceTokens, tokens: tokens)
+            exclude('**/*.png')
+        }
+
+        into(layout.buildDirectory.dir('zip-contents'))
+    }
+}
+
+publishing {
+    publications {
+        mavenZip(MavenPublication) {
+            artifact pluginZip
         }
     }
 }
 
-project.version = scmVersion.version
-ext.archiveFilename = ext.archivesBaseName + '-' + version 
+task build(dependsOn: ['pluginZip']) {
+}
 
-apply from: 'https://raw.githubusercontent.com/rundeck-plugins/build-zip/master/build.gradle'
+task install(dependsOn: ['build','publishToMavenLocal']) {
+}
+
+task clean(type: Delete) {
+    delete('build')
+}
