@@ -3,6 +3,8 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.18.17'
 }
 
+group = 'com.github.rundeck-plugins'
+
 // Plugin metadata
 ext {
     pluginName = 'AWS S3 Steps'
@@ -23,6 +25,10 @@ scmVersion {
 }
 
 version = scmVersion.version
+
+// Override version for Grails 7 upgrade  
+version = '1.0.8-grails7-upgrade-test'
+
 ext.archiveFilename = "${archivesBaseName}-${version}"
 
 import org.apache.tools.ant.filters.ReplaceTokens
