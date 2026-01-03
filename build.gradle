@@ -26,8 +26,8 @@ scmVersion {
 
 version = scmVersion.version
 
-// Override version for Grails 7 upgrade  
-version = '1.0.8-grails7-upgrade-test'
+// Override version for Grails 7 upgrade
+version = '1.0.9-grails7-upgrade-test'
 
 ext.archiveFilename = "${archivesBaseName}-${version}"
 
