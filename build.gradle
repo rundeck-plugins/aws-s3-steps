@@ -16,7 +16,7 @@ ext {
 }
 
 // Override version for Grails 7 upgrade
-version = '1.0.13-grails7-upgrade-test'
+version = '1.2.4-grails7-upgrade-test'
 
 ext.archiveFilename = "${archivesBaseName}-${version}"
 
