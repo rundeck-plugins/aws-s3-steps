@@ -1,8 +1,17 @@
 plugins {
+    id 'pl.allegro.tech.build.axion-release' version '1.17.2'
     id 'maven-publish'
 }
 
-group = 'com.github.rundeck-plugins'
+group = 'com.rundeck.plugins'
+
+scmVersion {
+    ignoreUncommittedChanges = false
+    tag {
+        prefix = ''           // NO "v" prefix - see PLUGIN_TAGGING_ARCHITECTURE.md
+        versionSeparator = ''
+    }
+}
 
 // Plugin metadata
 ext {
@@ -15,8 +24,7 @@ ext {
     pluginBaseFolder = "."
 }
 
-// Override version for Grails 7 upgrade
-version = '1.2.4-grails7-upgrade-test'
+version = scmVersion.version  // Dynamic version from git tag
 
 ext.archiveFilename = "${archivesBaseName}-${version}"
 
@@ -86,7 +94,28 @@ pluginZip.doFirst {
 publishing {
     publications {
         mavenZip(MavenPublication) {
-            artifact pluginZip
+            groupId = 'com.rundeck.plugins'
+            artifactId = 'aws-s3-steps'
+            version = project.version
+            
+            // Publish the pluginZip artifact (it's a JAR with .zip extension)
+            artifact(pluginZip) {
+                extension = 'jar'  // Tell Maven it's a JAR artifact type
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            name = "PackageCloudTest"
+            url = uri("https://packagecloud.io/pagerduty/rundeckpro-test/maven2")
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+            credentials(HttpHeaderCredentials) {
+                name = "Authorization"
+                value = "Bearer " + (System.getenv("PKGCLD_WRITE_TOKEN") ?: project.findProperty("pkgcldWriteToken"))
+            }
         }
     }
 }
