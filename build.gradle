@@ -108,7 +108,9 @@ nexusPublishing {
 
 apply from: "${rootDir}/gradle/publishing.gradle"
 
-task build(dependsOn: ['pluginZip']) {
+tasks.named('build').configure {
+    dependsOn tasks.named('pluginZip')
+}
 }
 
 task install(dependsOn: ['build','publishToMavenLocal']) {
