@@ -108,12 +108,10 @@ nexusPublishing {
 
 apply from: "${rootDir}/gradle/publishing.gradle"
 
-task build(dependsOn: ['pluginZip']) {
+// lifecycle `build` is created by Gradle base plugin (pulled in via nexus / maven-publish); extend it instead of redefining
+tasks.named('build').configure { dependsOn(pluginZip) }
+
+task install(dependsOn: ['build', 'publishToMavenLocal']) {
 }
 
-task install(dependsOn: ['build','publishToMavenLocal']) {
-}
-
-task clean(type: Delete) {
-    delete('build')
-}
+tasks.named('clean').configure { delete('build') }
