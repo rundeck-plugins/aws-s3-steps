@@ -1,6 +1,16 @@
 plugins {
-    id 'maven-publish'
-    id 'pl.allegro.tech.build.axion-release' version '1.18.17'
+    id 'pl.allegro.tech.build.axion-release' version '1.17.2'
+    id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+}
+
+group = 'org.rundeck.plugins'
+
+scmVersion {
+    ignoreUncommittedChanges = false
+    tag {
+        prefix = ''           // NO "v" prefix - see PLUGIN_TAGGING_ARCHITECTURE.md
+        versionSeparator = ''
+    }
 }
 
 // Plugin metadata
@@ -14,16 +24,14 @@ ext {
     pluginBaseFolder = "."
 }
 
-scmVersion {
-    ignoreUncommittedChanges = true
-    tag {
-        prefix = ''
-        versionSeparator = ''
-    }
-}
+version = scmVersion.version  // Dynamic version from git tag
 
-version = scmVersion.version
 ext.archiveFilename = "${archivesBaseName}-${version}"
+ext.publishName = "AWS S3 Steps ${project.version}"
+ext.githubSlug = 'rundeck-plugins/aws-s3-steps'
+ext.developers = [
+        [id: 'gschueler', name: 'Greg Schueler', email: 'greg@rundeck.com']
+]
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
@@ -88,20 +96,22 @@ pluginZip.doFirst {
     }
 }
 
-publishing {
-    publications {
-        mavenZip(MavenPublication) {
-            artifact pluginZip
+nexusPublishing {
+    packageGroup = 'org.rundeck.plugins'
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
         }
     }
 }
 
-task build(dependsOn: ['pluginZip']) {
+apply from: "${rootDir}/gradle/publishing.gradle"
+
+// lifecycle `build` is created by Gradle base plugin (pulled in via nexus / maven-publish); extend it instead of redefining
+tasks.named('build').configure { dependsOn(pluginZip) }
+
+task install(dependsOn: ['build', 'publishToMavenLocal']) {
 }
 
-task install(dependsOn: ['build','publishToMavenLocal']) {
-}
-
-task clean(type: Delete) {
-    delete('build')
-}
+tasks.named('clean').configure { delete('build') }
