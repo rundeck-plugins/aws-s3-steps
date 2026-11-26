@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: rundeck-plugins/.github/.github/actions/setup-java@main
         with:
-          java-version: '25'
+          java-version: '21'
       - name: Fetch tags
         run: git fetch --tags --progress --no-recurse-submodules origin
         if: ${{ !contains(github.ref, 'refs/tags') }}
